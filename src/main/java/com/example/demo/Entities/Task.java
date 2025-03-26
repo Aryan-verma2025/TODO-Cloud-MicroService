@@ -1,6 +1,8 @@
 package com.example.demo.Entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
@@ -8,7 +10,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
+import com.example.demo.Types.TaskPriority;
+import com.example.demo.Types.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 @Entity
 @Table(name = "tasks")
@@ -24,11 +29,13 @@ public class Task {
     @Column(nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private TaskStatus status;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private int priority;
+    private TaskPriority priority;
 
     @Column(nullable = false)
     private String username;
@@ -41,7 +48,7 @@ public class Task {
 
     }
 
-    public Task(String name, String description, String status, int priority, String username, LocalDateTime dueDate){
+    public Task(String name, String description, TaskStatus status, TaskPriority priority, String username, LocalDateTime dueDate){
         this.name = name;
         this.description = description;
         this.status =  status;
@@ -50,6 +57,7 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+    //Getters and Setters
     public long getId() {
         return id;
     }
@@ -74,19 +82,20 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
+
         this.status = status;
     }
 
-    public int getPriority() {
+    public TaskPriority getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(TaskPriority priority) {
         this.priority = priority;
     }
 

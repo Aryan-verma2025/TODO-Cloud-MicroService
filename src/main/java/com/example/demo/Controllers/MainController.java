@@ -3,8 +3,11 @@ package com.example.demo.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Jwt.JwtUtil;
 import com.example.demo.Services.TaskService;
 import com.example.demo.Services.UserService;
+import com.example.demo.Types.TaskPriority;
+import com.example.demo.Types.TaskStatus;
+
+
 import com.example.demo.Entities.Task;
 
 
@@ -79,7 +86,7 @@ public class MainController {
         return new ResponseEntity<>("Task Updated",HttpStatus.OK);
     }
 
-    @PostMapping("/delete-task")
+    @DeleteMapping("/delete-task")
     public ResponseEntity<String> deleteTask(@RequestBody Task task){
         task.setUsername(userService.getLoggedInUsername());
         Boolean isDeleted = taskService.deleteTask(task.getId(), task.getUsername());
@@ -92,5 +99,22 @@ public class MainController {
     @GetMapping("/get-all-tasks")
     public List<Task> getAllTasks(){
         return taskService.getAllTasks(userService.getLoggedInUsername());
+    }
+
+    @GetMapping("/get-tasks/{priority}/{status}")
+    public List<Task> getTasks(@PathVariable("priority") TaskPriority priority, @PathVariable("status") TaskStatus status){
+        System.out.println("priority "+priority+" status "+status);
+        return taskService.getTasks(priority,status,userService.getLoggedInUsername());
+    }
+
+    @PutMapping("/update-task-status")
+    public ResponseEntity<String> updateTaskStatus(@RequestBody Task task){
+        task.setUsername(userService.getLoggedInUsername());
+
+        if(taskService.updateTaskStatus(task.getId(), task)){
+            return new ResponseEntity<>("Status Updated",HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>("Update Failed",HttpStatus.NOT_FOUND);
     }
 }
