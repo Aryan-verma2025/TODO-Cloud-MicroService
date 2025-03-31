@@ -102,9 +102,34 @@ public class MainController {
     }
 
     @GetMapping("/get-tasks/{priority}/{status}")
-    public List<Task> getTasks(@PathVariable("priority") TaskPriority priority, @PathVariable("status") TaskStatus status){
+    public List<Task> getTasks(@PathVariable("priority") String priority, @PathVariable("status") String status){
         System.out.println("priority "+priority+" status "+status);
-        return taskService.getTasks(priority,status,userService.getLoggedInUsername());
+
+        TaskPriority eTaskPriority = null;
+        TaskStatus eTaskStatus = null;
+
+        if(priority.equals("LOW")){
+            eTaskPriority = TaskPriority.LOW;
+        }else if(priority.equals("MEDIUM")){
+            eTaskPriority = TaskPriority.MEDIUM;
+        }else if(priority.equals("HIGH")){
+            eTaskPriority = TaskPriority.HIGH;
+        }
+
+        if(status.equals("TODO")){
+            eTaskStatus = TaskStatus.TODO;
+        }else if(status.equals("RUNNING")){
+            eTaskStatus = TaskStatus.RUNNING;
+        }else if(status.equals("BLOCKER")){
+            eTaskStatus = TaskStatus.BLOCKER;
+        }else if(status.equals("DONE")){
+            eTaskStatus = TaskStatus.DONE;
+        }
+
+        System.out.println("priority == MEDIUM "+(priority == "MEDIUM"));
+        System.out.println("Priority enum = "+eTaskPriority);
+
+        return taskService.getTasks(eTaskPriority,eTaskStatus,userService.getLoggedInUsername());
     }
 
     @PutMapping("/update-task-status")
